@@ -90,19 +90,16 @@
       mediaRecorder.start(1000);
     });
 
-
     // scroll to bottom in case there is already content
     scroll_to_bottom(1300);
   }
 
-  
-
-
   // creates a message node and appends it to the conversation
   function display_msg(data){
-    $("#conversation").append("<div class='msg' style='color:"+data.c+"'>"+data.m+"</div>");
+    if(data.m) $("#conversation").append("<div class='msg' style='color:"+data.c+"'></div>");
     if(data.v){
       // for video element
+      var wrapper = document.createElement("div");
       var video = document.createElement("video");
       video.autoplay = true;
       video.controls = false; // optional
@@ -120,7 +117,8 @@
       // var video = document.createElement("img");
       // video.src = URL.createObjectURL(base64_to_blob(data.v));
 
-      document.getElementById("conversation").appendChild(video);
+      document.getElementById("conversation").appendChild(wrapper);
+      wrapper.appendChild(video);
     }
   }
 
@@ -176,13 +174,12 @@
 
       mediaRecorder.ondataavailable = function (blob) {
           //console.log("new data available!");
-          fb_instance_stream.push({v:cur_video_blob});
-
           video_container.innerHTML = "";
 
           // convert data into base 64 blocks
           blob_to_base64(blob,function(b64_data){
             cur_video_blob = b64_data;
+            fb_instance_stream.push({v:cur_video_blob});
           });
       };
       /*setInterval( function() {
