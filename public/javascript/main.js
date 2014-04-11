@@ -69,15 +69,17 @@
     });
 
     //Match with RegExp
-    $("#submission input").keyup(function( event ) {
-      var match = /:\)|:-\)|great|cool|yeah|:\(|:-\(|What!|What?|OMG|!!!/i;
-      var send_button = document.getElementById("sendrep");
-      if (match.test($(this).val())){
-        send_button.disabled = false;
-      }else{
-        send_button.disabled = true;        
-      }
-    });
+    // $("#submission input").keyup(function( event ) {
+    //   var match = /:\)|:-\)|great|cool|yeah|:\(|:-\(|What!|What?|OMG|!!!/i;
+    //   var send_button = document.getElementById("sendrep");
+    //   if (match.test($(this).val())){
+    //     send_button.disabled = false;
+    //   }else{
+    //     send_button.disabled = true;        
+    //   }
+    // });
+
+
 
     // scroll to bottom in case there is already content
     scroll_to_bottom(1300);
@@ -187,11 +189,32 @@
       mediaRecorder.video_width = video_width/2;
       mediaRecorder.video_height = video_height/2;
 
-      var send_repliable = document.createElement("button");
-      send_repliable.setAttribute("type", "button");
-      send_repliable.innerHTML = "Send Repliable Video!"
-      send_repliable.disabled = true;
-      send_repliable.id = "sendrep";
+      //emoji table
+      var smiley = document.getElementById("smiley");
+      smiley.onclick = function(event) {
+        $("#submission input").val($("#submission input").val() + ":)"); 
+      };
+
+      var smiley_nose = document.getElementById("smiley_nose");
+      smiley_nose.onclick = function(event) {
+        $("#submission input").val($("#submission input").val() + ":-)"); 
+      };
+
+      var sad = document.getElementById("sad");
+      sad.onclick = function(event) {
+        $("#submission input").val($("#submission input").val() + ":("); 
+      };
+
+      var sad = document.getElementById("sad_nose");
+      sad_nose.onclick = function(event) {
+        $("#submission input").val($("#submission input").val() + ":-("); 
+      };
+
+      var send_repliable = document.getElementById("sendrep");
+      // send_repliable.setAttribute("type", "button");
+      // send_repliable.innerHTML = "Send Repliable Video!"
+      //send_repliable.disabled = true;
+      //send_repliable.id = "sendrep";
       send_repliable.onclick = function(event) {
         is_response = false;
         mediaRecorder.start(1000);
@@ -199,7 +222,7 @@
         $("#submission input").val("");
         scroll_to_bottom(0);
       };
-      document.getElementById('submission').appendChild(send_repliable);
+      document.getElementById('sendrep_td').appendChild(send_repliable);
 
 
       mediaRecorder.ondataavailable = function (blob) {
