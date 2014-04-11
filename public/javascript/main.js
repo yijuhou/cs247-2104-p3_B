@@ -7,6 +7,7 @@
   var fb_instance;
   var mediaRecorder;
   var filter_class = "none";
+  var username_cp;
 
   $(document).ready(function(){
     connect_to_chat_firebase();
@@ -27,9 +28,9 @@
     display_msg({m:"Share this url with your friend to join this chat: "+ document.location.origin+"/#"+fb_chat_room_id,c:"red"})
 
     // set up variables to access firebase data structure
-    var fb_new_chat_room = fb_instance.child('chatrooms').child(fb_chat_room_id);
-    var fb_instance_users = fb_new_chat_room.child('users');
-    var fb_instance_stream = fb_new_chat_room.child('stream');
+     fb_new_chat_room = fb_instance.child('chatrooms').child(fb_chat_room_id);
+     fb_instance_users = fb_new_chat_room.child('users');
+     fb_instance_stream = fb_new_chat_room.child('stream');
     var my_color = "#"+((1<<24)*Math.random()|0).toString(16);
 
     // listen to events
@@ -44,9 +45,13 @@
     var username = window.prompt("Welcome, warrior! please declare your name?");
     if(!username){
       username = "anonymous"+Math.floor(Math.random()*1111);
+      username_cp = username;
     }
     fb_instance_users.push({ name: username,c: my_color});
     $("#waiting").remove();
+
+
+    $("#submission").append("<button id='repliable' type='button'>Send Repliable Video!</button>");
 
     // bind submission box
     $("#submission input").keydown(function( event ) {
@@ -79,9 +84,19 @@
         filter_class = "scared";
       }
     });
+
+  $("#repliable").click(function( event ) {
+      //mediaRecorder.stop();
+      mediaRecorder.start(1000);
+    });
+
+
     // scroll to bottom in case there is already content
     scroll_to_bottom(1300);
   }
+
+  
+
 
   // creates a message node and appends it to the conversation
   function display_msg(data){
@@ -161,6 +176,8 @@
 
       mediaRecorder.ondataavailable = function (blob) {
           //console.log("new data available!");
+          fb_instance_stream.push({v:cur_video_blob});
+
           video_container.innerHTML = "";
 
           // convert data into base 64 blocks
