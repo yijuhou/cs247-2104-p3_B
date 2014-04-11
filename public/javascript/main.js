@@ -8,6 +8,10 @@
   var mediaRecorder;
   var filter_class = "none";
   var username_cp;
+  var response_index = 0;
+  var is_response = false;
+  var is_repliable = false;
+  var response_id;
 
   $(document).ready(function(){
     connect_to_chat_firebase();
@@ -31,7 +35,7 @@
      fb_new_chat_room = fb_instance.child('chatrooms').child(fb_chat_room_id);
      fb_instance_users = fb_new_chat_room.child('users');
      fb_instance_stream = fb_new_chat_room.child('stream');
-    var my_color = "#"+((1<<24)*Math.random()|0).toString(16);
+    my_color = "#"+((1<<24)*Math.random()|0).toString(16);
 
     // listen to events
     fb_instance_users.on("child_added",function(snapshot){
@@ -42,7 +46,7 @@
     });
 
     // block until username is answered
-    var username = window.prompt("Welcome, warrior! please declare your name?");
+    username = window.prompt("Welcome, warrior! please declare your name?");
     if(!username){
       username = "anonymous"+Math.floor(Math.random()*1111);
       username_cp = username;
@@ -50,18 +54,15 @@
     fb_instance_users.push({ name: username,c: my_color});
     $("#waiting").remove();
 
-
-    $("#submission").append("<button id='repliable' type='button'>Send Repliable Video!</button>");
-
     // bind submission box
     $("#submission input").keydown(function( event ) {
       if (event.which == 13) {
-        if(has_emotions($(this).val())){
-          //mediaRecorder.stop();
+        /*if(has_emotions($(this).val())){
           fb_instance_stream.push({m:username+": " +$(this).val(), v:cur_video_blob, c: my_color});
         }else{
           fb_instance_stream.push({m:username+": " +$(this).val(), c: my_color});
-        }
+        }*/
+        fb_instance_stream.push({m:username+": " +$(this).val(), c: my_color});
         $(this).val("");
         scroll_to_bottom(0);
       }
@@ -69,25 +70,13 @@
 
     //Match with RegExp
     $("#submission input").keyup(function( event ) {
-      var happy = /:\)|:-\)|great|cool|yeah/i;
-      var sad = /:\(|:-\(/;
-      var scared = /What!|What?|OMG|!!!/;
-
-      if (happy.test($(this).val())){
-        mediaRecorder.start(3000);
-        filter_class = "happy";
-      }else if (sad.test($(this).val())){
-        mediaRecorder.start(3000);
-        filter_class = "sad";
-      }else if (scared.test($(this).val())){
-        mediaRecorder.start(3000);
-        filter_class = "scared";
+      var match = /:\)|:-\)|great|cool|yeah|:\(|:-\(|What!|What?|OMG|!!!/i;
+      var send_button = document.getElementById("sendrep");
+      if (match.test($(this).val())){
+        send_button.disabled = false;
+      }else{
+        send_button.disabled = true;        
       }
-    });
-
-  $("#repliable").click(function( event ) {
-      //mediaRecorder.stop();
-      mediaRecorder.start(1000);
     });
 
     // scroll to bottom in case there is already content
@@ -96,8 +85,10 @@
 
   // creates a message node and appends it to the conversation
   function display_msg(data){
-    if(data.m) $("#conversation").append("<div class='msg' style='color:"+data.c+"'></div>");
+    if(data.m) $("#conversation").append("<div class='msg' style='color:"+data.c+"'>"+data.m+"</div>");
     if(data.v){
+
+
       // for video element
       var wrapper = document.createElement("div");
       var video = document.createElement("video");
@@ -113,12 +104,36 @@
 
       video.appendChild(source);
 
+      if(data.response){
+        var resid = data.rid;
+        console.log(resid);
+        var target_wrapper = document.getElementById(resid);
+        target_wrapper.removeChild(target_wrapper.lastChild);
+        target_wrapper.appendChild(video);
+        return;
+      }
+
       // for gif instead, use this code below and change mediaRecorder.mimeType in onMediaSuccess below
       // var video = document.createElement("img");
       // video.src = URL.createObjectURL(base64_to_blob(data.v));
 
       document.getElementById("conversation").appendChild(wrapper);
       wrapper.appendChild(video);
+
+      if(data.r){
+        wrapper.id = "wrapper" + response_index;
+        is_response = true;
+        var response = document.createElement("button");
+        response.setAttribute("type", "button");
+        response.innerHTML = "Click to record a response video!";
+        var obj = response;
+        response.onclick = function(event){
+          response_id = obj.parentNode.id;
+          mediaRecorder.start(1000);
+        };
+        wrapper.appendChild(response);
+        response_index += 1;
+      }
     }
   }
 
@@ -172,6 +187,21 @@
       mediaRecorder.video_width = video_width/2;
       mediaRecorder.video_height = video_height/2;
 
+      var send_repliable = document.createElement("button");
+      send_repliable.setAttribute("type", "button");
+      send_repliable.innerHTML = "Send Repliable Video!"
+      send_repliable.disabled = true;
+      send_repliable.id = "sendrep";
+      send_repliable.onclick = function(event) {
+        is_response = false;
+        mediaRecorder.start(1000);
+        fb_instance_stream.push({m:username+": " +$("#submission input").val(), c: my_color});
+        $("#submission input").val("");
+        scroll_to_bottom(0);
+      };
+      document.getElementById('submission').appendChild(send_repliable);
+
+
       mediaRecorder.ondataavailable = function (blob) {
           //console.log("new data available!");
           video_container.innerHTML = "";
@@ -179,7 +209,13 @@
           // convert data into base 64 blocks
           blob_to_base64(blob,function(b64_data){
             cur_video_blob = b64_data;
-            fb_instance_stream.push({v:cur_video_blob});
+            if(is_response){
+              is_response = false;
+              //console.log(response_id);
+              fb_instance_stream.push({v:cur_video_blob, response:true, rid:response_id});
+              return;
+            }
+            fb_instance_stream.push({v:cur_video_blob, r: true});
           });
       };
       /*setInterval( function() {
