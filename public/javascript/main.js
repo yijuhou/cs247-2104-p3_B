@@ -65,6 +65,7 @@
         fb_instance_stream.push({m:username+": " +$(this).val(), c: my_color});
         $(this).val("");
         scroll_to_bottom(0);
+        document.getElementById("sendrep").disabled = true;
       }
     });
 
@@ -122,13 +123,13 @@
 
       if(data.r){
         wrapper.id = "wrapper" + response_index;
-        is_response = true;
         var response = document.createElement("button");
         response.setAttribute("type", "button");
         response.innerHTML = "Click to record a response video!";
-        var obj = response;
+        
         response.onclick = function(event){
-          response_id = obj.parentNode.id;
+          is_response = true;
+          response_id = wrapper.id;
           mediaRecorder.start(1000);
         };
         wrapper.appendChild(response);
@@ -192,8 +193,10 @@
       send_repliable.innerHTML = "Send Repliable Video!"
       send_repliable.disabled = true;
       send_repliable.id = "sendrep";
+
       send_repliable.onclick = function(event) {
         is_response = false;
+        document.getElementById("sendrep").disabled = true;
         mediaRecorder.start(1000);
         fb_instance_stream.push({m:username+": " +$("#submission input").val(), c: my_color});
         $("#submission input").val("");
