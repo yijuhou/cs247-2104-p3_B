@@ -65,7 +65,7 @@
         fb_instance_stream.push({m:username+": " +$(this).val(), c: my_color});
         $(this).val("");
         scroll_to_bottom(0);
-        document.getElementById("sendrep").disabled = true;
+        //document.getElementById("sendrep").disabled = true;
       }
     });
 
@@ -130,6 +130,7 @@
         response.innerHTML = "Click to record a response video!";
         
         response.onclick = function(event){
+          document.getElementById('webcam_stream').firstChild.className = "recording";
           is_response = true;
           response_id = wrapper.id;
           mediaRecorder.start(1000);
@@ -189,26 +190,43 @@
       // make recorded media smaller to save some traffic (80 * 60 pixels, 3*24 frames)
       mediaRecorder.video_width = video_width/2;
       mediaRecorder.video_height = video_height/2;
+      document.getElementById('webcam_stream').firstChild.className = "not-recording";
 
       //emoji table
       var smiley = document.getElementById("smiley");
       smiley.onclick = function(event) {
-        $("#submission input").val($("#submission input").val() + ":)"); 
+        $("#submission input").val($("#submission input").val() + " :)"); 
+        $("#submission input").focus();
       };
 
       var smiley_nose = document.getElementById("smiley_nose");
       smiley_nose.onclick = function(event) {
-        $("#submission input").val($("#submission input").val() + ":-)"); 
+        $("#submission input").val($("#submission input").val() + " :-)"); 
+        $("#submission input").focus();
       };
 
       var sad = document.getElementById("sad");
       sad.onclick = function(event) {
-        $("#submission input").val($("#submission input").val() + ":("); 
+        $("#submission input").val($("#submission input").val() + " :("); 
+        $("#submission input").focus();
       };
 
       var sad = document.getElementById("sad_nose");
       sad_nose.onclick = function(event) {
-        $("#submission input").val($("#submission input").val() + ":-("); 
+        $("#submission input").val($("#submission input").val() + " :-("); 
+        $("#submission input").focus();
+      };
+
+      var lol = document.getElementById("lol");
+      lol.onclick = function(event) {
+        $("#submission input").val($("#submission input").val() + " lol"); 
+        $("#submission input").focus();
+      };
+
+      var cry = document.getElementById("cry");
+      cry.onclick = function(event) {
+        $("#submission input").val($("#submission input").val() + " T.T (Doesn't it look really like crying?)"); 
+        $("#submission input").focus();
       };
 
       var send_repliable = document.getElementById("sendrep");
@@ -220,18 +238,21 @@
 
       send_repliable.onclick = function(event) {
         is_response = false;
-        document.getElementById("sendrep").disabled = true;
+        //document.getElementById("sendrep").disabled = true;
         mediaRecorder.start(1000);
         fb_instance_stream.push({m:username+": " +$("#submission input").val(), c: my_color});
         $("#submission input").val("");
         scroll_to_bottom(0);
+        $("#submission input").focus();
+        document.getElementById('webcam_stream').firstChild.className = "recording";
       };
-      document.getElementById('sendrep_td').appendChild(send_repliable);
+      document.getElementById('sendrep').parentNode.appendChild(send_repliable);
 
 
       mediaRecorder.ondataavailable = function (blob) {
           //console.log("new data available!");
           video_container.innerHTML = "";
+          document.getElementById('webcam_stream').firstChild.className = "not-recording";
 
           // convert data into base 64 blocks
           blob_to_base64(blob,function(b64_data){

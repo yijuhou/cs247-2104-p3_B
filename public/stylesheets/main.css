@@ -5,19 +5,44 @@ body {
 a {
   color: #00B7FF;
 }
+b {
+  color: blue;
+}
+table {
+  border-collapse: collapse;
+  border: 0px #d1bcf9;
+}
+.emo {
+  border: 1px solid gray;
+  background-color: yellow;
+  border-radius: 25px;
+}
+.wrapper {
+  border: 0px solid #d1bcf9;
+  text-align: right;
+  float: right;
+  background-color: #d1bcf9;
+  font-weight: bold;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+}
 .response {
   border: 3px solid red;
   width: 120px;
   height: 100px;
+}
+.not-recording {
+  border: 2px solid #dcc;
+}
+.recording {
+  border: 2px solid red;
 }
 #webcam_stream {
   position: absolute;
   top: 10px;
   right: 10px;
   padding: 0;
-}
-#webcam_stream video {
-  border: 2px solid #dcc;
 }
 #second_counter {
   position: fixed;
@@ -36,6 +61,7 @@ a {
   bottom: 0;
   width: 100%;
   right: 0;
+  height: 82px;
   border-top: 2px solid #dcc;
   background: #fff;
 }
@@ -46,6 +72,10 @@ a {
   outline: none;
   box-sizing: border-box;
   width: 100%;
+}
+#sendrep {
+  font-size: 96%;
+  font-weight: bold;
 }
 #waiting {
   position: fixed;

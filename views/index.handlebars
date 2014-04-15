@@ -1,22 +1,25 @@
   <div>Welcome to {{title}}, enable camera to post video emoji!</div>
+  <p>Also, try <b>sending a video</b> instead of a text emoji, and replying back to friends' video emoji with your own video! (<b>How about a high five</b> with your friend?)</p>
   <div id="waiting">Connecting to chat server... hahaha</div>
   <div id="second_counter"></div>
   <div id="conversation"></div>
   <div id="submission">
     <input type="text" placeholder="say something..">
+    <div class = "wrapper">
     <table id="emoji_table"border="1">
   		<tr>
-    		<td> <button type="button" id="smiley"> :) </button> </td>
-    		<td> <button type="button" id="smiley_nose"> :-) </button> </td>
+    		<td> <button type="button" class = "emo" id="smiley"> :) </button> </td>
+        <td> <button type="button" class = "emo" id="smiley_nose"> :-) </button> </td>
+        <td> <button type="button" class = "emo" id="lol"> lol </button> </td>
   		</tr>
   		<tr>
-    		<td> <button type="button" id="sad"> :( </button> </td>
-    		<td> <button type="button" id="sad_nose"> :-( </button> </td>
-  		</tr>
-      <tr>
-        <td id="sendrep_td"> <button type="button" id="sendrep"> Send Repliable Video! </button> </td>
-      </tr>
-	</table>
+    		<td> <button type="button" class = "emo" id="sad"> :( </button> </td>
+        <td> <button type="button" class = "emo" id="sad_nose"> :-( </button> </td>
+        <td> <button type="button" class = "emo" id="cry"> T.T </button> </td>
+  		</tr>  
+  	</table>
+    <button type="button" class = "emo" id="sendrep"> Send Repliable Video! </button>
+    </div>
   </div>
   <div id="webcam_stream"></div>
   <div id="video_container"></div>
