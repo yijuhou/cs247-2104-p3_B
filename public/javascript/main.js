@@ -190,7 +190,6 @@
       mediaRecorder.video_width = video_width/2;
       mediaRecorder.video_height = video_height/2;
 
-<<<<<<< HEAD
       //emoji table
       var smiley = document.getElementById("smiley");
       smiley.onclick = function(event) {
@@ -217,14 +216,8 @@
       // send_repliable.innerHTML = "Send Repliable Video!"
       //send_repliable.disabled = true;
       //send_repliable.id = "sendrep";
-=======
-      var send_repliable = document.createElement("button");
-      send_repliable.setAttribute("type", "button");
-      send_repliable.innerHTML = "Send Repliable Video!"
-      send_repliable.disabled = true;
-      send_repliable.id = "sendrep";
 
->>>>>>> 69eff99d558033098a7340ba502d4b6989b25768
+
       send_repliable.onclick = function(event) {
         is_response = false;
         document.getElementById("sendrep").disabled = true;
